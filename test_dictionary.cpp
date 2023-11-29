@@ -52,7 +52,22 @@ TEST_CASE("Basic Tests", "[Dictionary]") {
 }
 
 TEST_CASE("Test large Dictionary", "[Dictionary]") {
-	//To Do
-  
+    auto hash_function = [](const KeyType& key) -> std::size_t {
+        return std::hash<KeyType>{}(key);
+    };
+    HashDictionary<KeyType, ValueType, FunctionType> dict(hash_function, 97, 0.75f);
+    for (int i = 0; i < 97; i++) {
+        dict.add(i, std::to_string(i));
+      
+    }
+    REQUIRE(dict.size() == 97);
+   
+    //dictionary properly increased its size if these tests pass
+    for (int i = 97; i < 117; i++) {
+        dict.add(i, std::to_string(i));
+
+    }
+    REQUIRE(dict.size() == 117);
+    REQUIRE(dict.contains(112));
 }
 

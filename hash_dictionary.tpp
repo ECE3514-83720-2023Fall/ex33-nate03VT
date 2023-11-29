@@ -148,7 +148,28 @@ void HashDictionary<KeyType, ValueType, HashType>::add(const KeyType &key,
     if (static_cast<float>(m_size) / m_capacity > m_load_factor) { //the test for reallocation based on the defined load factor 
   
 
-        //have yet to add memory incresaing part
+              std::size_t new_capacity = m_capacity * 2; // Double capacity
+
+           KeyValueType* new_data = new KeyValueType[new_capacity];
+
+        // move old array elements into new array
+        for (std::size_t i = 0; i < m_capacity; ++i) {
+            if (m_data[i].filled) { //grab data in filled slots
+                std::size_t new_index = m_hash(m_data[i].key) % new_capacity;
+
+                while (new_data[new_index].filled) {
+                    new_index = (new_index + 1) % new_capacity; // Linear probing for new array
+                }
+
+                // Insert element into the new array
+                new_data[new_index] = m_data[i];
+            }
+        }
+
+        //restore memory 
+        delete[] m_data;
+        m_data = new_data;
+        m_capacity = new_capacity;
 
 
     }
