@@ -14,8 +14,41 @@ typedef HashDictionary<KeyType, ValueType, FunctionType> DictionaryType;
 
 
 TEST_CASE("Basic Tests", "[Dictionary]") {
-	//To DO
-  
+   
+
+
+
+
+    auto hash_function = [](const KeyType& key) -> std::size_t {
+               return std::hash<KeyType>{}(key);
+    };
+    HashDictionary<KeyType, ValueType, FunctionType> dict(hash_function, 97, 0.75f);
+   
+    
+   
+        dict.add(1, "One");
+        dict.add(2, "Two");
+        dict.add(3, "Three");
+
+        REQUIRE(dict.size() == 3);
+        REQUIRE(dict.get(1) == "One");
+        REQUIRE(dict.get(2) == "Two");
+        REQUIRE(dict.get(3) == "Three");
+    
+        dict.remove(2);
+
+        REQUIRE(dict.size() == 2);
+        REQUIRE(dict.contains(1));
+        REQUIRE_FALSE(dict.contains(2));
+        REQUIRE(dict.contains(3));
+
+        dict.clear();
+
+        REQUIRE(dict.isEmpty());
+        REQUIRE(dict.size() == 0);
+        REQUIRE_FALSE(dict.contains(1));
+        REQUIRE_FALSE(dict.contains(2));
+        REQUIRE_FALSE(dict.contains(3));
 }
 
 TEST_CASE("Test large Dictionary", "[Dictionary]") {

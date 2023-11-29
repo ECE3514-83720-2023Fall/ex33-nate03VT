@@ -116,24 +116,64 @@ void HashDictionary<KeyType, ValueType, HashType>::add(const KeyType &key,
     // TODO implement the add method...
     
     // 1. hash the key
-    
+    std::size_t index = m_hash(key) % m_capacity;
     
     // 2. do linear probing
     
+    std::size_t num_probes = 0;
+    while (m_data[index].filled && (num_probes < m_capacity)) {
+        if (m_data[index].key == key) {            // updating value if key exists
+            m_data[index].value = value;
+            return;
+        }
+        index = (index + 1) % m_capacity; // Move to the next slot
+        num_probes++;
+    }
+
     // 3. Check to see if linear probing has failed
     
+    if (num_probes == m_capacity) {
+         throw std::logic_error("Add failed: Dictionary Full");
+    }
+
     // 4. insert the key-value pair
    
+    m_data[index].key = key;  //index is at empty slot 
+    m_data[index].value = value;
+    m_data[index].filled = true;
+    m_size++;
+
     // 5. test if we need to reallocate¡¡and reallocate if needed
     
-      
+    if (static_cast<float>(m_size) / m_capacity > m_load_factor) { //the test for reallocation based on the defined load factor 
+  
+
+        //have yet to add memory incresaing part
+
+
+    }
 
 }
 
 template <typename KeyType, typename ValueType, typename HashType>
 void HashDictionary<KeyType, ValueType, HashType>::remove(const KeyType &key) {
     
-    //TODO implement the remove method...
+    std::size_t index = m_hash(key) % m_capacity; // Get initial index using hash function
+
+    std::size_t num_probes = 0;
+    while (m_data[index].filled && (num_probes < m_capacity)) {
+        if (m_data[index].key == key) {
+            // mark the found key slot as empty
+            m_data[index].filled = false;
+            m_size--;
+            return;
+        }
+        index = (index + 1) % m_capacity; //traverse to next
+        num_probes++;
+    }
+
+    //entire table is traversed but key not found:
+    throw std::logic_error("Error: Dictionairy does not contain key");
 }
 
 template <typename KeyType, typename ValueType, typename HashType>
