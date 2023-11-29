@@ -11,21 +11,13 @@ typedef std::string ValueType;
 typedef std::size_t (*FunctionType)(const KeyType &key);
 typedef HashDictionary<KeyType, ValueType, FunctionType> DictionaryType;
 
-
+std::size_t hash(const KeyType& key) { return key; }
 
 TEST_CASE("Basic Tests", "[Dictionary]") {
-   
 
-
-
-
-    auto hash_function = [](const KeyType& key) -> std::size_t {
-               return std::hash<KeyType>{}(key);
-    };
-    HashDictionary<KeyType, ValueType, FunctionType> dict(hash_function, 97, 0.75f);
-   
     
-   
+    DictionaryType dict(hash);
+
         dict.add(1, "One");
         dict.add(2, "Two");
         dict.add(3, "Three");
@@ -52,10 +44,10 @@ TEST_CASE("Basic Tests", "[Dictionary]") {
 }
 
 TEST_CASE("Test large Dictionary", "[Dictionary]") {
-    auto hash_function = [](const KeyType& key) -> std::size_t {
-        return std::hash<KeyType>{}(key);
-    };
-    HashDictionary<KeyType, ValueType, FunctionType> dict(hash_function, 97, 0.75f);
+
+
+    DictionaryType dict(hash);
+
     for (int i = 0; i < 97; i++) {
         dict.add(i, std::to_string(i));
       
